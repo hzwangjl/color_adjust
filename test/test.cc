@@ -14,6 +14,8 @@ cv::Vec3b adjust(cv::Vec3b pixal, float adapted){
         float tmp = color[c];
         tmp *= adapted;
         tmp = (tmp * (A * tmp + B)) / (tmp * (C * tmp + D) +E) * tmp;
+        tmp = tmp < 0 ? 0:tmp;
+        tmp = tmp > 255 ? 255:tmp;
         color[c] = tmp;
     }
     //printf("%d %d %d \n",pix[0],pix[1],pix[2]);
@@ -116,6 +118,8 @@ int main(void){
         float adapted_opt = 0;
         for(float adapted = 0.1; adapted < 1.3; adapted += 0.1){
             cv::Mat img_proc = adjust_image(img, adapted);
+            cv::imwrite("./out.jpg", img_proc);
+            system("../imgcat.sh out.jpg");
             double entropy, mean, std;
             // compute_psnr(img_ref, img_proc, psnr);
             compute_entropy(img_proc, entropy);
